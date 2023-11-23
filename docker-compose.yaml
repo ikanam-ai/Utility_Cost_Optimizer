@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  backend:
+    container_name: streamlit
+    build:
+      context: ./service
+    env_file:
+      - .env
+    ports:
+      - "${STREAMLIT_PORT}:${STREAMLIT_PORT}"
