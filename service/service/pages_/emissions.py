@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def main():
-    st.subheader('Выбросы')
+    st.subheader("Выбросы")
     chart_data = pd.DataFrame(
         {
             "col1": np.random.randn(20),
