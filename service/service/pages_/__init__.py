@@ -1,9 +1,8 @@
 from collections import namedtuple
-
-from .default import main as default
+from .dashboard import main as dashboard
 
 Page = namedtuple("Page", "title method")
 
 pages: dict[str, Page] = {
-    'archive': Page(title="База", method=default),
+    'dashboard': Page(title="Предсказание", method=dashboard),
 }
