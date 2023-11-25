@@ -1,24 +1,5 @@
 import streamlit as st
 import pandas as pd
-from uuid import uuid4
-
-
-def report(obj):
-    # Создайте отчет в формате txt
-    report = f"Отчет о недвижимости Центрального банка\n\n"
-    report += "Эффективные объекты:\n"
-    report += f"{uuid4} {obj[['area']].to_string(index=False)}\n\n"
-    report += "Статистика по эффективным объектам:\n"
-    report += "---------------------------------------------\n\n"
-    report += "Неэффективные объекты:\n"
-    report += f"{uuid4} {obj[['area']].to_string(index=False)}\n\n"
-    report += "Статистика по неэффективным объектам:\n"
-
-    # Сохраните отчет в файл
-    with open("real_estate_report.txt", "w") as file:
-        file.write(report)
-
-    st.title("Отчет")
 
 
 def main():
@@ -41,5 +22,5 @@ def main():
     st.write('Топ 5% верхних значений:')
     st.write(top_5_percent)
 
-    st.write('Топ 5% нижних значений:', data=report(bottom_5_percent))
+    st.write('Топ 5% нижних значений:')
     st.write(bottom_5_percent)
