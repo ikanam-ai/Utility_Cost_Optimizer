@@ -1,32 +1,26 @@
-import streamlit as st
+import shap
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import streamlit as st
+from catboost import CatBoostRegressor
+import streamlit.components.v1 as components
+
+
+def st_shap(plot, height=None):
+    shap_html = f"<head>{shap.getjs()}</head><body>{plot.html()}</body>"
+    components.html(shap_html, height=height)
 
 
 def main():
     st.title("")
     params = st.session_state.get('data_params', [])
-    result_f, result_t = st.session_state.get('predict_result', None)
-    np.random.seed(42)
-    data = {
-        "X1": np.random.rand(100),
-        "X2": np.random.rand(100),
-        "X3": np.random.rand(100),
-        "X4": np.random.rand(100),
-        "Y": np.random.rand(100)
-    }
+    result: tuple[pd.DataFrame, pd.DataFrame, CatBoostRegressor, tuple[float, int]] = st.session_state.get(
+        'predict_result')
+    feature_df, X, model, (mae, mae) = result
 
-    df = pd.DataFrame(data)
-    selected_y = st.selectbox("Выберите переменную Y:", df.columns, placeholder="Выберите")
-    selected_x = st.multiselect("Выберите переменные X:", df.columns[df.columns != selected_y], placeholder="Выберите")
-    st.write("Выбранные данные:")
-    st.write(df)
-    fig, ax = plt.subplots()
-    for x in selected_x:
-        ax.scatter(df[x], df[selected_y], label=x)
+    selected_y = st.selectbox("Выберите переменную Y:", feature_df.columns, placeholder="Выберите")
+    selected_x = st.multiselect("Выберите переменные X:", feature_df.columns[feature_df.columns != selected_y],
+                                placeholder="Выберите")
 
-    ax.set_xlabel(selected_x)
-    ax.set_ylabel(selected_y)
-    ax.legend()
-    st.pyplot(fig)
+    explainer = shap.TreeExplainer(model)
+    shap_values = explainer(X)
+    st_shap(shap.force_plot(shap_values))
