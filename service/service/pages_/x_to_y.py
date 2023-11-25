@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    st.title("Зависимость")
+    st.title("")
+    params = st.session_state.get('data_params', [])
+    result_f, result_t = st.session_state.get('predict_result', None)
     np.random.seed(42)
     data = {
         "X1": np.random.rand(100),
@@ -17,7 +19,7 @@ def main():
 
     df = pd.DataFrame(data)
     selected_y = st.selectbox("Выберите переменную Y:", df.columns, placeholder="Выберите")
-    selected_x = st.multiselect("Выберите переменные X:", df.columns[:-1], placeholder="Выберите")
+    selected_x = st.multiselect("Выберите переменные X:", df.columns[df.columns != selected_y], placeholder="Выберите")
     st.write("Выбранные данные:")
     st.write(df)
     fig, ax = plt.subplots()

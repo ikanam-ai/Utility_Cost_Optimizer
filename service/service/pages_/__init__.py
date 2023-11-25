@@ -23,7 +23,7 @@ class Pages(TypedDict):
 pages: Pages = {
     "main": Page(title="Главная", method=default),
     "main_with_children": Page(title="Главная", method=None),
-    "x_to_y": Page(title="Зависимости", method=x_2_y),
+    "x_to_y": Page(title="Анализ зависимости", method=x_2_y),
     "map": Page(title="Карта", method=map_),
     "emission": Page(title="Выбросы", method=emission),
     "about": Page(title="Решение", method=about),

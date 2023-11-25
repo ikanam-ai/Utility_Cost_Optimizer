@@ -1,9 +1,9 @@
-import time
+import hydralit_components as hc
 import streamlit as st
 import streamlit_antd_components as sac
-import hydralit_components as hc
-from utils.set_step import set_step
 from streamlit_javascript import st_javascript
+from utils.train import all_logic
+from utils.set_step import set_step
 
 
 def set_params(params):
@@ -12,16 +12,20 @@ def set_params(params):
 
 
 def teach():
-    params = st.session_state["data_params"]
+    params = st.session_state.get('data_params', [])
+    dataframe = st.session_state.dataframe
     st.columns([0.2, 0.6, 0.2])[1].title("Обучаем модель...")
 
     with hc.HyLoader('', hc.Loaders.pulse_bars):
-        time.sleep(2)
+        result_f = all_logic(dataframe, params, False)
+        result_t = all_logic(dataframe, params, True)
+        st.session_state.predict_result = (result_f, result_t)
+
     st.session_state["data_model"] = {}
     set_step("inner")
     st.toast("Модель обучена!", icon="✅")
     st.session_state.index = 1
-    # хак для обновления таб бара
+    # хак для обновления таббара
     st_javascript("""setTimeout(() => {});""")
 
 

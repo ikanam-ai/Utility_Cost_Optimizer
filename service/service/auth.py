@@ -1,13 +1,22 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 from hacks.authenticate import Authenticate
+from utils.load_model import load_model
 
 from config import Config
 from main import main as main_
 
 config = Config()
 
+
+@st.cache_data
+def load():
+    return load_model()
+
+
 st.set_page_config(page_title="Ikanam")
+
+st.session_state.dataframe = load()
 
 authenticator = Authenticate(
     {
