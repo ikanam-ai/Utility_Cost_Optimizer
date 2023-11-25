@@ -45,7 +45,9 @@ def train(X, y):
     return model, [mae, smape]
 
 
-def prepare_data(dataset: pd.DataFrame, numeric_features: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
+def prepare_data(dataset: pd.DataFrame):
+    numeric_features = ['balance', 'area', "date_issued:year", "date_issued:month", "date_issued:day",
+                        "date_issued:day_of_week", "date_issued:day_of_year"]
     numeric_transformer = Pipeline(
         steps=[("imputer", SimpleImputer(strategy="median")), ("scaler", StandardScaler())]
     )
@@ -71,11 +73,11 @@ def prepare_data(dataset: pd.DataFrame, numeric_features: list[str]) -> tuple[pd
     return X_train, y, preprocessor
 
 
-def all_logic(dataset, numeric_features):
-    X, y, preproccesor = prepare_data(dataset, numeric_features)
+def all_logic(dataset):
+    X, y, preproccesor = prepare_data(dataset)
     model, model_metrics = train(X, y)
     feature_df = get_model_stats(model, preproccesor)
-    result = model_metrics, feature_df
+    result = model_metrics, feature_df, model_metrics
     # model_metrics - 2 числа: [mae, smape]
     # feature_df - датасет полезности фичей
     return result
