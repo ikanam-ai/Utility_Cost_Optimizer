@@ -18,6 +18,12 @@ streamlit-folium = "^0.16.0"
 matplotlib = "^3.8.2"
 hydralit = "^1.0.14"
 streamlit-javascript = "^0.1.5"
+catboost = "^1.2.2"
+sklearn = "^0.0.post11"
+statsmodels = "^0.14.0"
+seaborn = "^0.13.0"
+scipy = "^1.11.4"
+tqdm = "^4.66.1"
 
 
 [build-system]
