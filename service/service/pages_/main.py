@@ -2,7 +2,7 @@ import hydralit_components as hc
 import streamlit as st
 import streamlit_antd_components as sac
 from streamlit_javascript import st_javascript
-from utils.train import make_logic
+from utils.train import all_logic
 from utils.set_step import set_step
 
 
@@ -17,7 +17,7 @@ def teach():
     st.columns([0.2, 0.6, 0.2])[1].title("Обучаем модель...")
 
     with hc.HyLoader('', hc.Loaders.pulse_bars):
-        st.session_state.predict_result = make_logic(dataframe, params)
+        st.session_state.predict_result = all_logic(dataframe, params)
 
     st.session_state["data_model"] = {}
     set_step("inner")
