@@ -1,26 +1,53 @@
-import shap
-import pandas as pd
 import streamlit as st
-from catboost import CatBoostRegressor
+import pandas as pd
 import streamlit.components.v1 as components
-
-
-def st_shap(plot, height=None):
-    shap_html = f"<head>{shap.getjs()}</head><body>{plot.html()}</body>"
-    components.html(shap_html, height=height)
+from catboost import CatBoostRegressor
+from streamlit_echarts import st_echarts
+from utils.train import prepare_data, make_logic
 
 
 def main():
     st.title("")
     params = st.session_state.get('data_params', [])
-    result: tuple[pd.DataFrame, pd.DataFrame, CatBoostRegressor, tuple[float, int]] = st.session_state.get(
+    result: tuple[
+        pd.DataFrame, pd.DataFrame, pd.DataFrame, CatBoostRegressor, tuple[float, int]] = st.session_state.get(
         'predict_result')
-    feature_df, X, model, (mae, mae) = result
+    dataframe = st.session_state.dataframe
+    feature_df, y, X, model, (mae, mae) = result
+    X, y, processor = prepare_data(dataframe, dataframe.columns)
+    selected = st.multiselect("Выберите переменные X:", processor.get_feature_names_out(), placeholder="Выберите")
+    feature_df, y, X, model, model_metrics = make_logic(dataframe, selected)
+    df_cor = pd.DataFrame(X, columns=processor.get_feature_names_out())
+    df_cor['Отнесено'] = y
+    ys = xs = ["Отнесено", *selected]
+    st.write(df_cor[[*selected, "Отнесено"]].corr())
+    data = [
 
-    selected_y = st.selectbox("Выберите переменную Y:", feature_df.columns, placeholder="Выберите")
-    selected_x = st.multiselect("Выберите переменные X:", feature_df.columns[feature_df.columns != selected_y],
-                                placeholder="Выберите")
+    ]
 
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer(X)
-    st_shap(shap.force_plot(shap_values))
+    option = {
+        "tooltip": {"position": "top"},
+        "grid": {"height": "50%", "top": "10%"},
+        "xAxis": {"type": "category", "data": xs, "splitArea": {"show": True}},
+        "yAxis": {"type": "category", "data": ys, "splitArea": {"show": True}},
+        "visualMap": {
+            "min": 0,
+            "max": 10,
+            "calculable": True,
+            "orient": "horizontal",
+            "left": "center",
+            "bottom": "15%",
+        },
+        "series": [
+            {
+                "name": "",
+                "type": "heatmap",
+                "data": data,
+                "label": {"show": True},
+                "emphasis": {
+                    "itemStyle": {"shadowBlur": 10, "shadowColor": "rgba(0, 0, 0, 0.5)"}
+                },
+            }
+        ],
+    }
+    st_echarts(option, height="500px")

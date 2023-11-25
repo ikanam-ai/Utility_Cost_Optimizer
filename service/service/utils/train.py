@@ -75,11 +75,14 @@ def prepare_data(dataset: pd.DataFrame, numeric_features: list[str]) -> tuple[
     return X_train, y, preprocessor
 
 
-def make_logic(dataset, numeric_features) -> tuple[pd.DataFrame, pd.DataFrame, CatBoostRegressor, tuple[float, int]]:
+def make_logic(dataset, numeric_features) -> tuple[
+    pd.DataFrame, pd.DataFrame, pd.DataFrame, CatBoostRegressor, tuple[float, int]]:
     X, y, processor = prepare_data(dataset, numeric_features)
     model, model_metrics = train(X, y)
     feature_df = get_model_stats(model, processor)
     # model_metrics - 2 числа: [mae, smape]
     # feature_df - датасет полезности фичей
 
-    return feature_df, X, model, model_metrics
+    return feature_df, y, X, model, model_metrics
+
+
